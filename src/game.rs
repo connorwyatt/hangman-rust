@@ -4,10 +4,6 @@ use words::get_random_word;
 mod guesses;
 mod words;
 
-pub(crate) enum GameplayError {
-    Unknown,
-}
-
 #[derive(PartialEq)]
 pub(crate) enum GameStateResult {
     Won,
