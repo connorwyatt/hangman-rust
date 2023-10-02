@@ -64,11 +64,17 @@ impl Game {
                     "Well done! You guessed the word with {} guesses remaining!",
                     self.lives_remaining,
                 );
+                println!();
+                self.output_current_word_state();
+                println!();
             }
             GameStateResult::Lost => {
                 println!("Oh no! You ran out of lives! I'll tell you what is was though:");
+                println!();
                 self.output_current_word_state();
+                println!();
                 println!("    {}", self.space_characters(&self.word));
+                println!();
             }
         };
     }
@@ -86,28 +92,38 @@ impl Game {
     fn play_guess_round(&mut self, is_first_guess: bool) {
         if is_first_guess {
             println!("The word for you to guess is:");
+            println!();
         }
 
         self.output_current_word_state();
+        println!();
 
         self.output_lives_remaining();
+        println!();
 
         println!("Please guess a letter, and make it a good one!");
+        println!();
 
         self.output_previous_guesses();
+        println!();
 
         let guess = prompt_for_guess();
+        println!();
 
         self.output_guess(&guess);
+        println!();
 
         match self.check_guess(guess) {
             Ok(success) => {
                 match success {
                     TryGuessSuccess::InWord(character) => {
                         println!("Awesome! \"{}\" is in the word! Nice job!", character);
+                        println!();
                     }
                     TryGuessSuccess::NotInWord(character) => {
                         println!("Sorry! \"{}\" is not in the word!", character);
+                        println!();
+
                         self.lives_remaining -= 1;
                     }
                 }
