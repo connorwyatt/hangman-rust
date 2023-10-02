@@ -12,17 +12,15 @@ First program written in Rust.
 
 ## Playing the game
 
-First, you must have Rust installed.
+### Prerequisites
 
-Next, build the executable:
+- Rust
+
+### Running the game
 
 ```
-cargo build --release
+cargo run
 ```
-
-Finally, run the executable from `./target/release`. It will be called `hangman`.
-
-_Note: the extension for the executable will be dependent on your platform._
 
 ## Using a custom word list
 
