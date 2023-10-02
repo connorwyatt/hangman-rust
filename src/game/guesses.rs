@@ -1,3 +1,4 @@
+use colored::Colorize;
 use std::io::{stdin, Error};
 
 pub(crate) fn prompt_for_guess() -> char {
@@ -6,19 +7,28 @@ pub(crate) fn prompt_for_guess() -> char {
     while let Err(error) = &result {
         match error {
             GuessError::Empty => {
-                println!("Your guess was empty!")
+                println!("{}", "\u{2717} Your guess was empty!".red())
             }
             GuessError::TooLong => {
-                println!("You entered more than one character! That's cheating!")
+                println!(
+                    "{}",
+                    "\u{2717} You entered more than one character! That's cheating!".red()
+                )
             }
             GuessError::Invalid(invalid_character) => {
                 println!(
-                    "You entered an invalid character! I don't know what to do with \"{}\".",
-                    invalid_character
+                    "{}",
+                    format!(
+                        "\u{2717} You entered an invalid character! I don't know what to do with \"{}\".",
+                        invalid_character
+                    ).red()
                 )
             }
             GuessError::Unknown => {
-                println!("Your guess was invalid in a way I don't even understand!")
+                println!(
+                    "{}",
+                    "\u{2717} Your guess was invalid in a way I don't even understand!".red()
+                )
             }
         };
 
