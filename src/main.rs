@@ -7,7 +7,7 @@ fn main() -> Result<(), Error> {
     print_intro();
 
     loop {
-        Game::new().play();
+        Game::new()?.play();
 
         println!("Press enter to play again!");
         stdin().read_line(&mut String::new())?;

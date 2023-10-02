@@ -1,4 +1,5 @@
 use crate::game::guesses::prompt_for_guess;
+use std::io;
 use words::get_random_word;
 
 mod guesses;
@@ -25,19 +26,21 @@ enum TryGuessError {
     AlreadyGuessed(char),
 }
 
-const TOTAL_ALLOWED_GUESSES: usize = 12;
+const TOTAL_LIVES: usize = 9;
 
 pub(crate) struct Game {
     word: String,
     guesses: Vec<char>,
+    lives_remaining: usize,
 }
 
 impl Game {
-    pub(crate) fn new() -> Self {
-        Game {
+    pub(crate) fn new() -> io::Result<Self> {
+        Ok(Game {
             word: get_random_word().to_uppercase(),
             guesses: Vec::new(),
-        }
+            lives_remaining: TOTAL_LIVES,
+        })
     }
 
     pub(crate) fn play(&mut self) {
@@ -59,11 +62,11 @@ impl Game {
             GameStateResult::Won => {
                 println!(
                     "Well done! You guessed the word with {} guesses remaining!",
-                    self.remaining_guesses()
+                    self.lives_remaining,
                 );
             }
             GameStateResult::Lost => {
-                println!("Oh no! You didn't guess the word! I'll tell you what is was though:");
+                println!("Oh no! You ran out of lives! I'll tell you what is was though:");
                 self.output_current_word_state();
                 println!("    {}", self.space_characters(&self.word));
             }
@@ -71,9 +74,9 @@ impl Game {
     }
 
     fn game_state(&self) -> GameState {
-        if self.unguessed_characters() == 0 {
+        if self.unknown_characters() == 0 {
             GameState::Complete(GameStateResult::Won)
-        } else if self.remaining_guesses() == 0 {
+        } else if self.lives_remaining == 0 {
             GameState::Complete(GameStateResult::Lost)
         } else {
             GameState::InProgress
@@ -87,9 +90,11 @@ impl Game {
 
         self.output_current_word_state();
 
-        self.output_remaining_guesses();
+        self.output_lives_remaining();
 
         println!("Please guess a letter, and make it a good one!");
+
+        self.output_previous_guesses();
 
         let guess = prompt_for_guess();
 
@@ -99,10 +104,11 @@ impl Game {
             Ok(success) => {
                 match success {
                     TryGuessSuccess::InWord(character) => {
-                        println!("Awesome! \"{}\" is in the word! Nice job!", character)
+                        println!("Awesome! \"{}\" is in the word! Nice job!", character);
                     }
                     TryGuessSuccess::NotInWord(character) => {
-                        println!("Sorry! \"{}\" is not in the word!", character)
+                        println!("Sorry! \"{}\" is not in the word!", character);
+                        self.lives_remaining -= 1;
                     }
                 }
 
@@ -110,16 +116,16 @@ impl Game {
             }
             Err(error) => match error {
                 TryGuessError::AlreadyGuessed(character) => {
-                    println!("You've already guessed {}!", character)
+                    println!("You've already guessed \"{}\"!", character);
                 }
             },
         };
     }
 
-    fn unguessed_characters(&self) -> usize {
+    fn unknown_characters(&self) -> usize {
         self.word
             .chars()
-            .filter(|char| !self.guesses.contains(&char))
+            .filter(|char| !self.guesses.contains(char))
             .count()
     }
 
@@ -131,7 +137,7 @@ impl Game {
                 if self.guesses.contains(&char) {
                     char
                 } else {
-                    '?'
+                    '_'
                 }
             })
             .collect::<String>();
@@ -139,12 +145,8 @@ impl Game {
         println!("    {}", self.space_characters(&current_word_state));
     }
 
-    fn remaining_guesses(&self) -> usize {
-        TOTAL_ALLOWED_GUESSES - self.guesses.len()
-    }
-
-    fn output_remaining_guesses(&self) {
-        println!("You have {} guesses remaining.", self.remaining_guesses());
+    fn output_lives_remaining(&self) {
+        println!("You have {} lives remaining.", self.lives_remaining);
     }
 
     fn output_guess(&self, guess: &char) {
@@ -165,7 +167,18 @@ impl Game {
         }
     }
 
-    fn space_characters(&self, string: &String) -> String {
+    fn output_previous_guesses(&self) {
+        println!(
+            "Previous guesses: {}",
+            self.guesses
+                .iter()
+                .map(|guess| guess.to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
+    }
+
+    fn space_characters(&self, string: &str) -> String {
         let letters = string
             .chars()
             .map(|char| char.to_string())
