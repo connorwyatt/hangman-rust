@@ -1,13 +1,13 @@
 # Hangman
 
-First program written in Rust.
+My first program written in Rust.
 
 ## Rules
 
-- You get 9 lives.
+- You get **9** lives.
 - You will be shown a blanked out word and asked to guess a letter from the word.
 - If your guess is incorrect, you lose a life.
-- If your lives hit 0, you lose the game.
+- If your lives hit **0**, you lose the game.
 - If you guess all the letters in the word, you win the game.
 
 ## Playing the game
