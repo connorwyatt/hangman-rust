@@ -24,7 +24,7 @@ cargo run
 
 ## Using a custom word list
 
-You can replace the [words list](./src/game/words.txt) with a custom words list.
+You can replace the [words list](src/game/words.txt) with a custom words list.
 
 _Note: you will need to rebuild the game to see this take effect._
 

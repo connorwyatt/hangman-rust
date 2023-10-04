@@ -1,24 +1,22 @@
 use rand::distributions::Uniform;
 use rand::{thread_rng, Rng};
 
-pub(crate) fn get_random_word() -> String {
+pub(crate) fn random_word(minimum_word_length: usize) -> String {
     let mut rng = thread_rng();
 
-    let words = read_words();
+    let words = read_words(minimum_word_length);
 
     let index = rng.sample(Uniform::new(0, words.len()));
 
     words[index].clone().to_string()
 }
 
-const MINIMUM_WORD_LENGTH: i8 = 4;
-
-fn read_words() -> Vec<String> {
+fn read_words(minimum_word_length: usize) -> Vec<String> {
     let str = include_str!("words.txt");
 
     str.split(&['\r', '\n'][..])
         .map(|line| line.trim().to_string())
-        .filter(|line| line.len() >= (MINIMUM_WORD_LENGTH as usize))
+        .filter(|line| line.len() >= minimum_word_length)
         .collect::<Vec<String>>()
 }
 
@@ -28,6 +26,6 @@ mod tests {
 
     #[test]
     fn getting_a_random_word_returns_a_word() {
-        assert!(!get_random_word().is_empty());
+        assert!(!random_word(4).is_empty());
     }
 }
