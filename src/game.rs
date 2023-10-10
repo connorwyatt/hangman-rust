@@ -1,6 +1,7 @@
 use crate::game::MakeGuessSuccess::{Correct, Incorrect};
 use words::random_word;
 
+pub(crate) mod allowed_letters;
 mod words;
 
 pub(crate) struct Game {
@@ -30,8 +31,8 @@ pub(crate) enum GuessStatus {
 
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum MakeGuessSuccess {
-    Correct,
-    Incorrect,
+    Correct(String),
+    Incorrect(String),
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -39,9 +40,11 @@ pub(crate) enum MakeGuessError {
     Empty,
     TooLong,
     Invalid,
-    AlreadyGuessed,
+    AlreadyGuessed(String),
     GameComplete,
 }
+
+pub(crate) type MakeGuessResult = Result<MakeGuessSuccess, MakeGuessError>;
 
 impl Game {
     pub(crate) fn new(lives: usize, minimum_word_size: usize) -> Self {
@@ -53,7 +56,7 @@ impl Game {
         }
     }
 
-    pub(crate) fn make_guess(&mut self, guess: &str) -> Result<MakeGuessSuccess, MakeGuessError> {
+    pub(crate) fn make_guess(&mut self, guess: &str) -> MakeGuessResult {
         let guess = &guess.to_uppercase();
 
         if self.status != GameStatus::InProgress {
@@ -63,7 +66,7 @@ impl Game {
         self.validate_guess(guess)?;
 
         if self.is_already_guessed(guess) {
-            return Err(MakeGuessError::AlreadyGuessed);
+            return Err(MakeGuessError::AlreadyGuessed(guess.clone()));
         }
 
         let is_correct = self.is_letter_in_word(guess);
@@ -84,9 +87,9 @@ impl Game {
         self.update_status();
 
         if is_correct {
-            Ok(Correct)
+            Ok(Correct(guess.clone()))
         } else {
-            Ok(Incorrect)
+            Ok(Incorrect(guess.clone()))
         }
     }
 
@@ -194,7 +197,7 @@ mod tests {
 
         let result = game.make_guess(&String::from("t"));
 
-        assert_eq!(result, Ok(Correct));
+        assert_eq!(result, Ok(Correct(String::from("T"))));
         assert_eq!(
             game.guesses(),
             vec![(String::from("T"), GuessStatus::Correct)]
@@ -209,7 +212,7 @@ mod tests {
 
         let result = game.make_guess(&String::from("a"));
 
-        assert_eq!(result, Ok(Incorrect));
+        assert_eq!(result, Ok(Incorrect(String::from("A"))));
         assert_eq!(game.lives_remaining(), 0);
         assert_eq!(
             game.status(),
@@ -229,7 +232,7 @@ mod tests {
 
         let result = game.make_guess(&String::from("n"));
 
-        assert_eq!(result, Ok(Correct));
+        assert_eq!(result, Ok(Correct(String::from("N"))));
         assert_eq!(game.lives_remaining(), initial_lives_remaining);
         assert_eq!(game.status(), GameStatus::Complete(CompleteGameStatus::Won))
     }
@@ -243,7 +246,7 @@ mod tests {
 
         let result = game.make_guess(&String::from("a"));
 
-        assert_eq!(result, Ok(Incorrect));
+        assert_eq!(result, Ok(Incorrect(String::from("A"))));
         assert_eq!(
             game.guesses(),
             vec![(String::from("A"), GuessStatus::Incorrect)]
@@ -261,7 +264,7 @@ mod tests {
         let _ = game.make_guess(&String::from("t"));
         let result = game.make_guess(&String::from("t"));
 
-        assert_eq!(result, Err(AlreadyGuessed));
+        assert_eq!(result, Err(AlreadyGuessed(String::from("T"))));
         assert_eq!(
             game.guesses(),
             vec![(String::from("T"), GuessStatus::Correct)]
@@ -279,7 +282,7 @@ mod tests {
         let _ = game.make_guess(&String::from("a"));
         let result = game.make_guess(&String::from("a"));
 
-        assert_eq!(result, Err(AlreadyGuessed));
+        assert_eq!(result, Err(AlreadyGuessed(String::from("A"))));
         assert_eq!(
             game.guesses(),
             vec![(String::from("A"), GuessStatus::Incorrect)]

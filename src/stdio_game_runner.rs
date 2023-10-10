@@ -143,14 +143,14 @@ impl StdIOGameRunner {
     ) {
         match make_guess_result {
             Ok(result) => match result {
-                MakeGuessSuccess::Correct => {
+                MakeGuessSuccess::Correct(guess) => {
                     println!(
                         "{}",
                         format!("\u{2713} Awesome! \"{}\" is in the word! Nice job!", guess)
                             .green()
                     )
                 }
-                MakeGuessSuccess::Incorrect => {
+                MakeGuessSuccess::Incorrect(guess) => {
                     println!(
                         "{}",
                         format!("\u{2717} Sorry! \"{}\" is not in the word!", guess).red()
@@ -176,7 +176,7 @@ impl StdIOGameRunner {
                         ).red()
                     )
                 }
-                MakeGuessError::AlreadyGuessed => {
+                MakeGuessError::AlreadyGuessed(guess) => {
                     println!("{}", format!("You've already guessed \"{}\"!", guess).red())
                 }
                 MakeGuessError::GameComplete => {

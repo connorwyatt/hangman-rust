@@ -1,5 +1,5 @@
-use rand::distributions::Uniform;
-use rand::{thread_rng, Rng};
+use crate::game::allowed_letters::ALLOWED_LETTER_RANGE;
+use rand::{distributions::Uniform, thread_rng, Rng};
 
 pub(crate) fn random_word(minimum_word_length: usize) -> String {
     let mut rng = thread_rng();
@@ -15,8 +15,9 @@ fn read_words(minimum_word_length: usize) -> Vec<String> {
     let str = include_str!("words.txt");
 
     str.split(&['\r', '\n'][..])
-        .map(|line| line.trim().to_string())
         .filter(|line| line.len() >= minimum_word_length)
+        .map(|line| line.trim().to_uppercase())
+        .filter(|line| line.chars().all(|x| ALLOWED_LETTER_RANGE.contains(&x)))
         .collect::<Vec<String>>()
 }
 
