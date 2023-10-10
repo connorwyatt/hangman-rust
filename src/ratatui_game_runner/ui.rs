@@ -29,7 +29,20 @@ pub(crate) fn render(app: &mut App, frame: &mut Frame) {
 fn render_header(app: &mut App, frame: &mut Frame, area: Rect) {
     let inner_rect = render_block(frame, area, "Hangman");
 
-    frame.render_widget(Paragraph::new("Welcome to Hangman!"), inner_rect);
+    let chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Min(20), Constraint::Min(20)])
+        .split(inner_rect);
+
+    frame.render_widget(Paragraph::new("Welcome to Hangman!"), chunks[0]);
+    frame.render_widget(
+        Paragraph::new(format!(
+            "Played: {}, Won: {}, Lost: {}",
+            app.games_played, app.games_won, app.games_lost
+        ))
+        .alignment(Alignment::Right),
+        chunks[1],
+    );
 }
 
 fn render_current_game_and_guesses(app: &mut App, frame: &mut Frame, area: Rect) {
@@ -57,7 +70,7 @@ fn render_current_game_and_remaining_letters(app: &mut App, frame: &mut Frame, a
 fn render_current_game(app: &mut App, frame: &mut Frame, area: Rect) {
     let inner_rect = render_block(frame, area, "Current Game").inner(&Margin::new(1, 1));
 
-    let current_word_state = format!("{}", app.game().blanked_out_letters().join(" "));
+    let current_word_state = format!("{}", app.game.blanked_out_letters().join(" "));
 
     render_current_game_state(frame, inner_rect, current_word_state);
 }
@@ -104,7 +117,7 @@ fn render_current_game_state(frame: &mut Frame, area: Rect, current_word_state: 
 fn render_remaining_letters(app: &App, frame: &mut Frame, area: Rect) {
     let inner_rect = render_block(frame, area, "Remaining Letters").inner(&Margin::new(1, 1));
 
-    let guesses = app.game().guesses();
+    let guesses = app.game.guesses();
 
     let remaining_letters_spans = intersperse(
         ALLOWED_LETTER_RANGE
@@ -135,7 +148,7 @@ fn render_lives_and_guesses(app: &mut App, frame: &mut Frame, area: Rect) {
 fn render_lives(app: &mut App, frame: &mut Frame, area: Rect) {
     let inner_rect = render_block(frame, area, "Lives");
 
-    let lives_remaining = app.game().lives_remaining();
+    let lives_remaining = app.game.lives_remaining();
 
     let lives_remaining_span = Span::raw(format!("{}", lives_remaining));
     let lives_remaining_span = match lives_remaining {
@@ -161,7 +174,7 @@ fn render_lives(app: &mut App, frame: &mut Frame, area: Rect) {
 fn render_guesses(app: &mut App, frame: &mut Frame, area: Rect) {
     let inner_rect = render_block(frame, area, "Guesses");
 
-    let guesses = app.game().guesses();
+    let guesses = app.game.guesses();
 
     let guessed_letters_lines = guesses
         .iter()

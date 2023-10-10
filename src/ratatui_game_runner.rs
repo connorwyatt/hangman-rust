@@ -21,7 +21,7 @@ impl RatatuiGameRunner {
         let mut tui = Tui::new(terminal, events);
         tui.initialize().expect("failed to initialize UI");
 
-        while !app.should_quit() {
+        while !app.should_quit {
             tui.draw(&mut app).expect("failed to draw");
 
             update(
