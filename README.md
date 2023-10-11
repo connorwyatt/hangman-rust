@@ -18,17 +18,25 @@ My first program written in Rust.
 
 ### Running the game
 
-#### Stdio game runner
+##### Ratatui game runner (default)
 
 ```
 cargo run
 ```
 
-##### Ratatui game runner
+![ratatui_default_ui.png](ratatui_default_ui.png)
+
+![ratatui_in_progress_ui.png](ratatui_in_progress_ui.png)
+
+![ratatui_complete_ui.png](ratatui_complete_ui.png)
+
+#### Stdio game runner (original)
 
 ```
-cargo run --no-default-features --features "ratatui_game_runner"
+cargo run --no-default-features --features "stdio_game_runner"
 ```
+
+![stdio_ui.png](stdio_ui.png)
 
 ## Using a custom word list
 
