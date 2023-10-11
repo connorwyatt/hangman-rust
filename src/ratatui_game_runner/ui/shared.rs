@@ -1,8 +1,7 @@
 use crate::ratatui_game_runner::tui::Frame;
-use ratatui::style::Style;
 use ratatui::{
     layout::{Constraint, Direction, Layout, Margin, Rect},
-    style::{Color, Stylize},
+    style::{Color, Style, Stylize},
     text::Span,
     widgets::{Block, BorderType, Borders},
 };

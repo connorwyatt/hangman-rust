@@ -1,8 +1,10 @@
 use anyhow::Result;
 use crossterm::event::{self, Event as CrosstermEvent, KeyEvent, MouseEvent};
-use std::sync::mpsc;
-use std::thread;
-use std::time::{Duration, Instant};
+use std::{
+    sync::mpsc,
+    thread,
+    time::{Duration, Instant},
+};
 
 #[derive(Clone, Copy, Debug)]
 pub(crate) enum Event {

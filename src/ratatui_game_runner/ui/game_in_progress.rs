@@ -1,13 +1,14 @@
-use crate::ratatui_game_runner::app::CurrentView;
 use crate::{
     game::{allowed_letters::ALLOWED_LETTER_RANGE, GuessStatus},
-    ratatui_game_runner::ui::shared,
-    ratatui_game_runner::{app::App, tui::Frame},
+    ratatui_game_runner::{
+        app::{App, CurrentView},
+        tui::Frame,
+        ui::shared,
+    },
 };
-use ratatui::style::Style;
 use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Margin, Rect},
-    style::{Color, Modifier, Stylize},
+    style::{Color, Modifier, Style, Stylize},
     text::{Line, Span},
     widgets::Paragraph,
 };

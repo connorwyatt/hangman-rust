@@ -1,7 +1,10 @@
-use crate::ratatui_game_runner::app::{CurrentView, PlayAgain};
 use crate::{
     game::{CompleteGameStatus, GameStatus},
-    ratatui_game_runner::{app::App, tui::Frame, ui::shared},
+    ratatui_game_runner::{
+        app::{App, CurrentView, PlayAgain},
+        tui::Frame,
+        ui::shared,
+    },
 };
 use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Margin, Rect},

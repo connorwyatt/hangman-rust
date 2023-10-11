@@ -4,8 +4,7 @@ mod tui;
 mod ui;
 mod update;
 
-use crate::ratatui_game_runner::update::update;
-use crate::ratatui_game_runner::{app::App, event_handler::EventHandler, tui::Tui};
+use crate::ratatui_game_runner::{app::App, event_handler::EventHandler, tui::Tui, update::update};
 use ratatui::{backend::CrosstermBackend, Terminal};
 
 pub(crate) struct RatatuiGameRunner;

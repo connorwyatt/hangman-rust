@@ -1,5 +1,7 @@
-use crate::ratatui_game_runner::app::{CurrentView, GameCompleteState, PlayAgain};
-use crate::ratatui_game_runner::{app::App, event_handler::Event};
+use crate::ratatui_game_runner::{
+    app::{App, CurrentView, GameCompleteState, PlayAgain},
+    event_handler::Event,
+};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 pub(crate) fn update(app: &mut App, event: Event) {
