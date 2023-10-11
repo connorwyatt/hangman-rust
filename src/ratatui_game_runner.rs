@@ -4,7 +4,6 @@ mod tui;
 mod ui;
 mod update;
 
-use crate::game::Game;
 use crate::ratatui_game_runner::update::update;
 use crate::ratatui_game_runner::{app::App, event_handler::EventHandler, tui::Tui};
 use ratatui::{backend::CrosstermBackend, Terminal};
@@ -13,7 +12,7 @@ pub(crate) struct RatatuiGameRunner;
 
 impl RatatuiGameRunner {
     pub(crate) fn run(lives: usize, minimum_word_size: usize) {
-        let mut app = App::new(Game::new(lives, minimum_word_size));
+        let mut app = App::new(lives, minimum_word_size);
 
         let backend = CrosstermBackend::new(std::io::stderr());
         let terminal = Terminal::new(backend).expect("failed to create Terminal");
